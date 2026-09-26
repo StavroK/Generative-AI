@@ -1,0 +1,23 @@
+version: 1
+agent: procurement-assistant
+rules:
+  - tool: policy_search
+    action: read
+    decision: allow
+  - tool: vendor_search
+    action: read
+    decision: allow
+  - tool: contract_analyze
+    action: read
+    decision: allow_if_authorized
+  - tool: purchase_requisition
+    action: create
+    decision: require_human_approval
+    constraints:
+      max_amount_usd: 10000
+  - tool: vendor_master
+    action: update
+    decision: deny
+  - tool: supplier_email
+    action: send
+    decision: require_human_approval
