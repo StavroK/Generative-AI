@@ -20,8 +20,8 @@ jobs:
       - name: Syntax check
         run: |
           python -m py_compile ai-program-risk-dashboard/app.py
-          python -m py_compile enterprise-rag-aws/src/app.py
-          python -m py_compile enterprise-rag-aws/src/mock_adapters.py
+          python -m py_compile enterprise-rag-aws/rag_demo/app.py
+          python -m py_compile enterprise-rag-aws/rag_demo/mock_adapters.py
 
       - name: Install test tooling
         run: pip install pytest
