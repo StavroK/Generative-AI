@@ -1,0 +1,5 @@
+id,initiative,risk,exposure,owner,status
+PR-01,Contract Intelligence Assistant,Data classification owner unresolved,High,Data Governance,Open
+PR-02,Sales AI Agent,Agent tool authorization boundary unresolved,High,Security/Product,Open
+PR-03,Portfolio,Shared AI usage may exceed forecast,Medium,FinOps,Mitigating
+PR-04,Predictive Maintenance,Historical sensor gaps,Medium,Data Lead,Mitigating
