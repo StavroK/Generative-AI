@@ -1,0 +1,56 @@
+from pathlib import Path
+import time
+
+import streamlit as st
+
+from bedrock import bedrock_answer
+from retrieval import load_documents, retrieve
+
+
+BASE = Path(__file__).parent
+DOCS = load_documents(BASE / "demo_docs")
+
+st.set_page_config(page_title="Northstar Bedrock RAG Demo", layout="wide")
+
+st.title("Northstar Enterprise Knowledge Assistant")
+st.caption("Portfolio demo: evidence retrieval + Amazon Bedrock generation")
+
+with st.sidebar:
+    st.subheader("Governance")
+    st.write("Answers are generated only when approved evidence is retrieved.")
+    st.write("Low-confidence retrieval produces a safe fallback.")
+    st.write("Sources are shown with every answer.")
+    st.caption("Demo data is fictional.")
+
+question = st.text_input(
+    "Ask a question",
+    placeholder="What is required before an AI solution can move to production?",
+)
+
+if question:
+    start = time.perf_counter()
+    chunks = retrieve(question, DOCS, top_k=3)
+
+    min_score = 0.18
+    accepted = [c for c in chunks if c.score >= min_score]
+
+    if not accepted:
+        st.warning("I do not have enough approved evidence to answer that question.")
+        st.caption(f"Retrieval completed in {time.perf_counter() - start:.2f}s")
+    else:
+        try:
+            answer = bedrock_answer(question, [c.text for c in accepted])
+            elapsed = time.perf_counter() - start
+
+            st.subheader("Answer")
+            st.write(answer)
+
+            st.subheader("Sources")
+            for c in accepted:
+                st.write(f"- {c.source} (retrieval score: {c.score:.2f})")
+
+            st.caption(f"End-to-end latency: {elapsed:.2f}s")
+        except Exception as exc:
+            st.error("Bedrock generation could not be completed.")
+            st.code(str(exc))
+            st.info("Check AWS authentication, AWS_REGION, model access, and BEDROCK_MODEL_ID.")
