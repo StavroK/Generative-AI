@@ -1,5 +1,5 @@
-from enterprise_rag_aws.src.app import RagService
-from enterprise_rag_aws.src.mock_adapters import MockGenerator, MockRetriever
+from rag_demo.app import RagService
+from rag_demo.mock_adapters import MockGenerator, MockRetriever
 
 
 def test_returns_citations():
