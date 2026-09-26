@@ -83,3 +83,9 @@ Generative-AI/
 ## Scope note
 
 All business names, budgets, metrics and scenarios in the Northstar program are fictional and created for portfolio demonstration. Reference architectures and controls are intended to show technical-delivery fluency and governance judgment; they do not claim production deployment of every illustrated component.
+
+## Publication & deployment
+
+- [GitHub profile README template](./docs/GITHUB_PROFILE_README.md)
+- [Dashboard deployment guide](./ai-program-risk-dashboard/DEPLOY.md)
+- [Portfolio publication checklist](./docs/NEXT_STEPS.md)
