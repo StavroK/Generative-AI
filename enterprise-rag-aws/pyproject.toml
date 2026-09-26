@@ -1,0 +1,9 @@
+[project]
+name = "enterprise-rag-aws"
+version = "0.1.0"
+description = "Portfolio RAG orchestration skeleton"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
