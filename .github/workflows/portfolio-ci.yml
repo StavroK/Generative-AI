@@ -28,6 +28,7 @@ jobs:
 
       - name: Run RAG unit tests
         run: pytest enterprise-rag-aws/tests -q
+          pytest enterprise-rag-aws/live-demo/tests -q
 
       - name: Terraform format check
         uses: hashicorp/setup-terraform@v3
