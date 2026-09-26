@@ -16,6 +16,7 @@ The portfolio is organized around the fictional **Northstar Enterprise AI Transf
 | Area | What it proves | Open |
 |---|---|---|
 | Enterprise RAG on AWS | GenAI + AWS architecture, backlog, security, IaC, release governance | [View](./enterprise-rag-aws/) |
+| Live Bedrock RAG Demo | Runnable evidence retrieval + Amazon Bedrock Converse generation | [View](./enterprise-rag-aws/live-demo/) |
 | AI Portfolio Governance | Multi-project health, budget, dependencies, RAID, steering decisions | [View](./ai-portfolio-governance/) |
 | Agentic AI Governance | Human approval, tool authorization, runtime policy boundaries | [View](./agentic-ai-governance/) |
 | LLMOps Delivery Framework | AI-specific lifecycle gates, observability, incidents, release criteria | [View](./llmops-delivery-framework/) |
@@ -89,3 +90,10 @@ All business names, budgets, metrics and scenarios in the Northstar program are 
 - [GitHub profile README template](./docs/GITHUB_PROFILE_README.md)
 - [Dashboard deployment guide](./ai-program-risk-dashboard/DEPLOY.md)
 - [Portfolio publication checklist](./docs/NEXT_STEPS.md)
+
+
+## Live AWS demo
+
+The [Live Bedrock RAG Demo](./enterprise-rag-aws/live-demo/) is ready to run against an AWS account with Amazon Bedrock access. It uses the Bedrock Converse API, configurable model/region settings, explicit source citations, and a safe fallback when evidence is insufficient.
+
+Deployment requires AWS authentication to be supplied securely by the runtime; no AWS credentials are stored in this repository.
