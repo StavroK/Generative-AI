@@ -1,0 +1,6 @@
+initiative,type,health,approved_budget_k,forecast_budget_k,schedule_variance_days,exec_attention
+Customer Support Copilot,RAG / GenAI,Green,450,442,0,No
+Contract Intelligence Assistant,GenAI,Yellow,310,336,12,Yes
+Predictive Maintenance,Machine Learning,Green,600,590,-3,No
+Sales AI Agent,Agentic AI,Yellow,220,235,9,Yes
+Fraud Detection Modernization,Machine Learning,Green,720,705,2,No
