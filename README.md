@@ -50,7 +50,7 @@ flowchart TD
     PMO --> DASH[Executive Risk Dashboard]
 ```
 
-## What I want an interviewer to see
+## What I want you to see
 
 - I can manage **multiple concurrent AI initiatives**, not only one prototype.
 - I understand enough architecture to challenge assumptions and sequence work credibly.
