@@ -28,18 +28,37 @@ with st.sidebar:
     st.write("Answers are generated only when approved evidence is retrieved.")
     st.write("Low-confidence retrieval produces a safe fallback.")
     st.write("Sources are shown with every answer.")
-    st.caption("Demo data is fictional.")
+    st.caption("All Northstar content and metrics are fictional demonstration data.")
+
+st.subheader("Suggested interview questions")
+
+suggested = [
+    "What is required before an AI solution can move to production?",
+    "When does an AI agent require human approval?",
+    "How is the Northstar AI portfolio governed?",
+    "Why did the team choose Bedrock instead of SageMaker for the RAG MVP?",
+    "What AI quality metrics are reviewed before release?",
+    "How does the program control AI cost and usage?",
+    "What happens during an AI incident?",
+    "What should happen when authorization is ambiguous?",
+]
+
+cols = st.columns(2)
+selected_question = None
+for idx, q in enumerate(suggested):
+    if cols[idx % 2].button(q, use_container_width=True, key=f"q_{idx}"):
+        selected_question = q
 
 question = st.text_input(
-    "Ask a question",
-    placeholder="What is required before an AI solution can move to production?",
+    "Or ask your own question",
+    value=selected_question or "",
+    placeholder="Ask about governance, architecture, risk, evaluation, cost, or production readiness...",
 )
 
 def demo_answer(question: str, evidence: list[str]) -> str:
     joined = " ".join(evidence)
-    # Deterministic fallback: intentionally simple so it never impersonates an LLM.
     sentences = [s.strip() for s in joined.replace("\n", " ").split(".") if s.strip()]
-    selected = sentences[:4]
+    selected = sentences[:5]
     return "Based on the approved evidence: " + ". ".join(selected) + "."
 
 if question:
@@ -68,6 +87,11 @@ if question:
             st.subheader("Sources")
             for c in accepted:
                 st.write(f"- {c.source} (retrieval score: {c.score:.2f})")
+
+            with st.expander("Why these sources were retrieved"):
+                for c in accepted:
+                    st.write(f"**{c.source}** — score {c.score:.2f}")
+                    st.write(c.text[:700] + ("..." if len(c.text) > 700 else ""))
 
             st.caption(f"End-to-end latency: {elapsed:.2f}s")
 
