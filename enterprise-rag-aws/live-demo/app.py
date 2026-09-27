@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 import time
 
 import streamlit as st
@@ -6,14 +7,21 @@ import streamlit as st
 from bedrock import bedrock_answer
 from retrieval import load_documents, retrieve
 
-
 BASE = Path(__file__).parent
 DOCS = load_documents(BASE / "demo_docs")
 
-st.set_page_config(page_title="Northstar Bedrock RAG Demo", layout="wide")
+st.set_page_config(page_title="Northstar RAG Demo", layout="wide")
+
+mode = os.environ.get("GENERATION_MODE", "demo").lower()
+is_bedrock = mode == "bedrock"
 
 st.title("Northstar Enterprise Knowledge Assistant")
-st.caption("Portfolio demo: evidence retrieval + Amazon Bedrock generation")
+if is_bedrock:
+    st.success("Generation mode: Amazon Bedrock")
+else:
+    st.warning("Generation mode: Demo Mode (Bedrock-ready, no AWS inference required)")
+
+st.caption("Portfolio demo: governed evidence retrieval + cited answer generation")
 
 with st.sidebar:
     st.subheader("Governance")
@@ -27,6 +35,13 @@ question = st.text_input(
     placeholder="What is required before an AI solution can move to production?",
 )
 
+def demo_answer(question: str, evidence: list[str]) -> str:
+    joined = " ".join(evidence)
+    # Deterministic fallback: intentionally simple so it never impersonates an LLM.
+    sentences = [s.strip() for s in joined.replace("\n", " ").split(".") if s.strip()]
+    selected = sentences[:4]
+    return "Based on the approved evidence: " + ". ".join(selected) + "."
+
 if question:
     start = time.perf_counter()
     chunks = retrieve(question, DOCS, top_k=3)
@@ -39,7 +54,12 @@ if question:
         st.caption(f"Retrieval completed in {time.perf_counter() - start:.2f}s")
     else:
         try:
-            answer = bedrock_answer(question, [c.text for c in accepted])
+            evidence = [c.text for c in accepted]
+            if is_bedrock:
+                answer = bedrock_answer(question, evidence)
+            else:
+                answer = demo_answer(question, evidence)
+
             elapsed = time.perf_counter() - start
 
             st.subheader("Answer")
@@ -50,7 +70,8 @@ if question:
                 st.write(f"- {c.source} (retrieval score: {c.score:.2f})")
 
             st.caption(f"End-to-end latency: {elapsed:.2f}s")
+
         except Exception as exc:
-            st.error("Bedrock generation could not be completed.")
+            st.error("Generation could not be completed.")
             st.code(str(exc))
-            st.info("Check AWS authentication, AWS_REGION, model access, and BEDROCK_MODEL_ID.")
+            st.info("If using Bedrock mode, verify AWS authentication, AWS_REGION, model access, and BEDROCK_MODEL_ID.")
