@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from pathlib import Path
 import re
 
 
@@ -10,18 +9,11 @@ class Chunk:
     score: float
 
 
-WORD_RE = re.compile(r"[A-Za-z0-9_-]+")
+WORD_RE = re.compile(r"\w+", re.UNICODE)
 
 
 def _tokens(text: str) -> set[str]:
     return {w.lower() for w in WORD_RE.findall(text) if len(w) > 2}
-
-
-def load_documents(base: Path) -> list[tuple[str, str]]:
-    docs = []
-    for path in sorted(base.glob("*.md")):
-        docs.append((path.name, path.read_text(encoding="utf-8")))
-    return docs
 
 
 def retrieve(query: str, documents: list[tuple[str, str]], top_k: int = 3) -> list[Chunk]:
