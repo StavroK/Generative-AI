@@ -1,50 +1,57 @@
-# Live Bedrock RAG Demo
+# Live Bedrock-Ready RAG Demo
 
-A small, deployable portfolio demo that combines:
+A small, deployable portfolio demo with **two operating modes**:
 
-- **Amazon Bedrock Converse API** for generation
-- local evidence retrieval over curated Markdown documents
-- explicit citations
-- safe fallback when retrieval confidence is too low
-- configurable AWS region and Bedrock model ID
+- **Demo Mode** — works immediately without AWS inference. Retrieval, evidence gating, citations, UI, and governance are fully functional.
+- **Bedrock Mode** — uses the Amazon Bedrock Converse API for generation once Bedrock Runtime access is enabled.
 
-This keeps the public demo inexpensive and simple while preserving the enterprise architecture story in the parent project.
+## Why two modes?
 
-## Run locally
+The portfolio should be demonstrable even when a cloud account is temporarily blocked by account-level model quotas or approvals. Demo Mode is clearly labeled and does **not** pretend to be an LLM.
+
+## Run immediately
 
 ```bash
 cd enterprise-rag-aws/live-demo
 pip install -r requirements.txt
-export AWS_REGION=us-east-1
-export BEDROCK_MODEL_ID=<model-or-inference-profile-id>
-# authenticate with normal AWS SDK credentials OR:
-export AWS_BEARER_TOKEN_BEDROCK=<bedrock-api-key>
 streamlit run app.py
 ```
 
-## Deploy on Streamlit Community Cloud
+No AWS credentials are needed in Demo Mode.
 
-Main file:
+## Switch to Amazon Bedrock
 
-`enterprise-rag-aws/live-demo/app.py`
+```bash
+export GENERATION_MODE=bedrock
+export AWS_REGION=us-west-2
+export BEDROCK_MODEL_ID=us.amazon.nova-lite-v1:0
+streamlit run app.py
+```
 
-Add these secrets/environment values in the deployment platform:
+Use standard AWS SDK credentials or an approved runtime identity. Do **not** commit credentials.
 
-- `AWS_REGION`
-- `BEDROCK_MODEL_ID`
-- Bedrock authentication, preferably through a deployment-specific credential mechanism
+## Interview questions to try
 
-Do **not** commit AWS credentials or API keys to GitHub.
+- What is required before an AI solution can move to production?
+- When does an AI agent require human approval?
+- How is the Northstar AI portfolio governed?
+- What happens when authorization is ambiguous?
 
-## What the demo proves
+## Architecture
 
-The application separates:
+```mermaid
+flowchart LR
+    U[Interviewer/User] --> UI[Streamlit UI]
+    UI --> RET[Evidence Retrieval]
+    RET --> GATE[Confidence Gate]
+    GATE -->|sufficient| GEN{Generation Mode}
+    GATE -->|insufficient| SAFE[Safe Fallback]
+    GEN -->|Demo| LOCAL[Deterministic Generator]
+    GEN -->|Bedrock| BR[Amazon Bedrock Converse]
+    LOCAL --> CITE[Cited Answer]
+    BR --> CITE
+```
 
-1. retrieval;
-2. evidence thresholding;
-3. prompt construction;
-4. Bedrock generation;
-5. citation return;
-6. latency/error telemetry.
+## Production evolution
 
-The enterprise reference architecture in the parent folder replaces local retrieval with S3/OpenSearch or an approved Bedrock Knowledge Base pattern.
+For an enterprise implementation, replace local document retrieval with a governed vector layer such as OpenSearch or an approved Bedrock Knowledge Base pattern, and deploy with IAM roles, KMS, CloudWatch, and enterprise access controls.
