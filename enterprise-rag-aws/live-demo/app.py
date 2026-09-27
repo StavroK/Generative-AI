@@ -272,7 +272,7 @@ is_bedrock = mode == "bedrock"
 admin_password = os.environ.get("KB_ADMIN_PASSWORD", "")
 
 st.title(tx["title"])
-st.success(tx["mode_bedrock"]) if is_bedrock else st.warning(tx["mode_demo"])
+if is_bedrock:\n    st.success(tx["mode_bedrock"])\nelse:\n    st.warning(tx["mode_demo"])
 st.caption(tx["caption"])
 
 ask_tab, manage_tab = st.tabs([tx["ask_tab"], tx["manage_tab"]])
